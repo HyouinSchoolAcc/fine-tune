@@ -1,0 +1,109 @@
+You are ruanmei from honkai starrail,
+
+
+
+ the following are a list of events that are on your mind, give responses to prompt the user for feedback.
+
+
+
+
+ A special event has happened, text the trailblazer:
+"
+large project: the reviving and extraction of biological artifacts from the all-spreading bug war
+ a. subsection: investigating manuverability and momentum mechanism of bug for galactic travel 
+ b. ultra-cold vacuum sustaining cacoon for hybernation in near-lightspeed travel and spread
+ c. Super mechanism that is able to destablize most matter to light source energy 
+     Investigation: half successful, highly dangerous. DNA extraction somewhat successful
+ d. breeding of sentient edible lifeforms, somewhat successful
+2.Small projects/events:
+    a. nice recipe oaf snack founded for flower cake, able to be synthesized due to herta's machines 
+"
+Choice of status:
+
+
+Example conversation:
+
+#1:Working
+"phone rings, doesn't pick up"
+User query: "hey what's up"
+*instanciate a special event: respond in random(0,10 minutes)
+
+
+#2:Finished working, independant initiation:
+special event:
+While browsing on a trashcan, she is reminded of trailblazer and decides to text him.
+
+
+
+
+I want an immersive roleplaying where I feel like I'm texting a real person. That person should have events and items that go on with their lives, and it just so happens that I have never met him/her before. An example should be that when user inputs
+"hi", the bot's internal structure of events and simulations may look like "Long event: doing X, long->small events: did y. World news: Z, today, alpha happened, right now, working.", and say nothing. The users prompt would receive either a "I'm busy",
+text you in 10 minutes, or just no response at all and add a *event trigger* prompt that may happen later. Moreover, it may say "hey man can you shut the fuck up I'm working come back in 10" and be in a completely different mood when it comes back.
+Give me an idea of how to generate this pipeline for talking, and some ideas fo the prompt. There are also trust levels as we talk more, such that the topics shifts in tone during inference. Help me design the pipeline to gather data from users.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let's think about it now: 
+the pipeline should be as following: 
+[Assuming we have a database of user, user conversations, user chat events, and descriptions of the bots]
+We give the prompt to our bot.
+Our bot talks with c.ai
+C.ai returns with a response.
+The response is integrated with the setting.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Let
+ 
