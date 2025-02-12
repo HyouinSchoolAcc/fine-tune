@@ -2,6 +2,17 @@ import os
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from datasets import Dataset
+import os
+import torch
+print(torch.cuda.device_count())
+for i in range(torch.cuda.device_count()):
+    print(f"GPU {i}: {torch.cuda.get_device_name(i)}")
+
+
+# Enable NCCL debug logging for more info and try to disable some P2P features if needed
+os.environ["NCCL_DEBUG"] = "INFO"
+os.environ["NCCL_IB_DISABLE"] = "1"
+os.environ["NCCL_P2P_DISABLE"] = "1"
 
 # Disable tokenizers parallelism to avoid warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
