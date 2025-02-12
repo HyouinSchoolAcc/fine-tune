@@ -5,6 +5,8 @@ from datasets import Dataset
 
 # Disable tokenizers parallelism to avoid warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+# Exclude GPU 2 by exposing only GPU 0 and GPU 1 (the high-performance NVIDIA H100 NVL GPUs)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 
 def load_and_preprocess_data(json_file):
     """
@@ -48,9 +50,9 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(model_id)
     
-    # Set a padding token if the tokenizer doesn't have one
+    # Set a padding token if the tokenizer doesn't have one.
     if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token  # Use EOS token as padding token
+        tokenizer.pad_token = tokenizer.eos_token  # Use EOS token as the padding token
     
     # Load and preprocess the conversation data.
     conversation_texts = load_and_preprocess_data(json_file)
@@ -79,7 +81,7 @@ def main():
         logging_steps=10,
         save_steps=100,
         save_total_limit=2,
-        eval_strategy="no"  # Updated to use `eval_strategy` instead of `evaluation_strategy`
+        eval_strategy="no"       # Use 'eval_strategy' instead of the deprecated 'evaluation_strategy'
     )
     
     # Create the Trainer.
