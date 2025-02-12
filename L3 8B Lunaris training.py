@@ -33,7 +33,7 @@ def load_and_preprocess_data(json_file):
 
 def tokenize_function(example, tokenizer, max_length=1024):
     # Tokenizes a single example, truncating to max_length tokens.
-    return tokenizer(example["text"], truncation=True, max_length=max_length)
+    return tokenizer(example["text"], truncation=True, padding="max_length", max_length=max_length)
 
 def main():
     # Define paths and model identifier.
@@ -43,6 +43,10 @@ def main():
     # Load tokenizer and model.
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(model_id)
+    
+    # Set a padding token if the tokenizer doesn't have one
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token  # Use EOS token as padding token
     
     # Load and preprocess the conversation data.
     conversation_texts = load_and_preprocess_data(json_file)
