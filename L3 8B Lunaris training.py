@@ -12,7 +12,7 @@ for i in range(torch.cuda.device_count()):
 # Enable NCCL debug logging for more info and try to disable some P2P features if needed
 os.environ["NCCL_DEBUG"] = "INFO"
 os.environ["NCCL_IB_DISABLE"] = "1"
-os.environ["NCCL_P2P_DISABLE"] = "1"
+os.environ["NCCL_SHM_DISABLE"] = "1"
 
 # Disable tokenizers parallelism to avoid warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -102,7 +102,11 @@ def main():
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset,
-        tokenizer=tokenizer
+        tokenizer=tokenizer,
+        devices = 2,
+        accelerator = "gpu",
+        strategy = "ddp"
+
     )
     
     # Start training.
