@@ -1,6 +1,10 @@
+import os
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from datasets import Dataset
+
+# Disable tokenizers parallelism to avoid warnings
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 def load_and_preprocess_data(json_file):
     """
@@ -75,7 +79,7 @@ def main():
         logging_steps=10,
         save_steps=100,
         save_total_limit=2,
-        evaluation_strategy="no"  # Change to "steps" or "epoch" to add evaluation
+        eval_strategy="no"  # Updated to use `eval_strategy` instead of `evaluation_strategy`
     )
     
     # Create the Trainer.
