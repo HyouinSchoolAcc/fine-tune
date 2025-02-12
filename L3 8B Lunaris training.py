@@ -49,8 +49,10 @@ def load_and_preprocess_data(json_file):
     return conversation_texts
 
 def tokenize_function(example, tokenizer, max_length=1024):
-    # Tokenizes a single example, truncating to max_length tokens.
-    return tokenizer(example["text"], truncation=True, padding="max_length", max_length=max_length)
+    outputs = tokenizer(example["text"], truncation=True, padding="max_length", max_length=max_length)
+    # Set the labels equal to the input_ids so that the model can compute LM loss.
+    outputs["labels"] = outputs["input_ids"].copy()
+    return outputs
 
 def main():
     # Define paths and model identifier.
