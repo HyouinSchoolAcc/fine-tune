@@ -102,11 +102,7 @@ def main():
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset,
-        tokenizer=tokenizer,
-        devices = 2,
-        accelerator = "gpu",
-        strategy = "ddp"
-
+        tokenizer=tokenizer
     )
     
     # Start training.
