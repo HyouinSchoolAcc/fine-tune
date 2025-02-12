@@ -90,7 +90,7 @@ def main():
         gradient_accumulation_steps=8,
         learning_rate=2e-5,
         weight_decay=0.01,
-        fp8=True,               # Enable mixed precision if available
+        fp16=True,               # Enable mixed precision if available
         logging_steps=10,
         save_steps=100,
         save_total_limit=2,
