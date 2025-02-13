@@ -64,27 +64,20 @@ tokenized_dataset = dataset.map(tokenize_function, batched=True, remove_columns=
 # DeepSpeed Configuration
 # ==========================
 ds_config = {
-    "train_batch_size": 2,  # Smaller batch size for memory efficiency
-    "gradient_accumulation_steps": 4,
-    "fp16": {
-        "enabled": True
-    },
-    "zero_optimization": {
-        "stage": 2,  # Offloads optimizer states to CPU
-        "offload_optimizer": {
-            "device": "cpu",
-            "pin_memory": True
-        }
-    },
-    "optimizer": {
-        "type": "adamw",
-        "params": {
-            "lr": 2e-5,
-            "weight_decay": 0.01
-        }
-    },
-    "gradient_clipping": 1.0,  # Prevent gradient explosion
-    "steps_per_print": 10
+  "fp16": {
+    "enabled": true
+  },
+  "zero_optimization": {
+    "stage": 2,
+    "offload_optimizer": {
+      "device": "cpu",
+      "pin_memory": true
+    }
+  },
+  "train_micro_batch_size_per_gpu": "auto",
+  "gradient_accumulation_steps": "auto",
+  "train_batch_size": "auto",
+  "steps_per_print": 10
 }
 
 # Save DeepSpeed config to file
