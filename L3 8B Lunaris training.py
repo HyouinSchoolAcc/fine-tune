@@ -33,7 +33,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     torch_dtype=torch.float16  # Match precision with DeepSpeed config
-)
+).to("cuda")
 
 # Use EOS token as padding token if missing
 if tokenizer.pad_token is None:
