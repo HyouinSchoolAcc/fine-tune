@@ -30,7 +30,11 @@ print("Before model loading:", torch.cuda.memory_allocated() / 1e9, "GB")
 # ==========================
 model_id = "Sao10K/L3-8B-Lunaris-v1"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype=torch.float16,  # Match precision with DeepSpeed config
+    device_map="auto"  # Let HF accelerate handle device placement
+).cuda()
 
 # Use EOS token as padding token if missing
 if tokenizer.pad_token is None:
@@ -56,10 +60,22 @@ json_file = "all_conversations.json"
 dataset = load_data(json_file)
 
 def tokenize_function(example):
-    return tokenizer(example["text"], truncation=True, padding="max_length", max_length=1024)
+    # Explicitly specify device mapping for tokenization
+    return tokenizer(
+        example["text"],
+        truncation=True,
+        padding="max_length",
+        max_length=1024,
+        return_tensors="pt"  # Return PyTorch tensors directly
+    )
 
-tokenized_dataset = dataset.map(tokenize_function, batched=True, remove_columns=["text"])
-
+# Convert to PyTorch format and keep tensors on GPU
+tokenized_dataset = dataset.map(
+    tokenize_function,
+    batched=True,
+    remove_columns=["text"],
+    batch_size=32  # Reduce memory pressure
+).with_format("torch", device="cuda")  # Keep dataset on GPU
 # ==========================
 # DeepSpeed Configuration
 # ==========================
