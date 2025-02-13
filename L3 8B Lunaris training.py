@@ -32,8 +32,7 @@ model_id = "Sao10K/L3-8B-Lunaris-v1"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
-    torch_dtype=torch.float16,  # Match precision with DeepSpeed config
-    device_map="auto"  # Let HF accelerate handle device placement
+    torch_dtype=torch.float16  # Match precision with DeepSpeed config
 )
 
 # Use EOS token as padding token if missing
@@ -85,10 +84,6 @@ ds_config = {
   },
   "zero_optimization": {
     "stage": 2,
-    "offload_optimizer": {
-      "device": "cpu",
-      "pin_memory": True
-    }
   },
   "train_micro_batch_size_per_gpu": "auto",
   "gradient_accumulation_steps": "auto",
