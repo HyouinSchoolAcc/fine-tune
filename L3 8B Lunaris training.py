@@ -65,13 +65,13 @@ tokenized_dataset = dataset.map(tokenize_function, batched=True, remove_columns=
 # ==========================
 ds_config = {
   "fp16": {
-    "enabled": true
+    "enabled": True
   },
   "zero_optimization": {
     "stage": 2,
     "offload_optimizer": {
       "device": "cpu",
-      "pin_memory": true
+      "pin_memory": True
     }
   },
   "train_micro_batch_size_per_gpu": "auto",
