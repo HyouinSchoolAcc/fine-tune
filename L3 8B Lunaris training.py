@@ -9,6 +9,8 @@ from datasets import Dataset
 # Environment & Debugging
 # ==========================
 
+torch.cuda.empty_cache()
+
 # Enable NCCL debug logs
 os.environ["NCCL_DEBUG"] = "INFO"
 os.environ["NCCL_IB_DISABLE"] = "1"  # Disable InfiniBand issues
@@ -16,7 +18,7 @@ os.environ["NCCL_SHM_DISABLE"] = "1"  # Avoid shared memory issues
 os.environ["NCCL_P2P_DISABLE"] = "0"  # Enable peer-to-peer GPU comms
 
 # Use only GPUs 0 and 1 (your H100s)
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # Disable tokenizers parallelism to prevent warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -58,22 +60,34 @@ def load_data(json_file):
 json_file = "all_conversations.json"
 dataset = load_data(json_file)
 
+# def tokenize_function(example):
+#     # Explicitly specify device mapping for tokenization
+#     return tokenizer(
+#         example["text"],
+#         truncation=True,
+#         padding="max_length",
+#         max_length=1024,
+#         return_tensors="pt"  # Return PyTorch tensors directly
+#     )
+
 def tokenize_function(example):
     # Explicitly specify device mapping for tokenization
-    return tokenizer(
+    encoding = tokenizer(
         example["text"],
         truncation=True,
         padding="max_length",
         max_length=1024,
         return_tensors="pt"  # Return PyTorch tensors directly
     )
+    encoding["labels"] = encoding["input_ids"].clone()
+    return encoding
 
 # Convert to PyTorch format and keep tensors on GPU
 tokenized_dataset = dataset.map(
     tokenize_function,
     batched=True,
     remove_columns=["text"],
-    batch_size=32  # Reduce memory pressure
+    batch_size=4  # Reduce memory pressure
 ).with_format("torch", device="cuda")  # Keep dataset on GPU
 # ==========================
 # DeepSpeed Configuration
@@ -85,7 +99,7 @@ ds_config = {
   "zero_optimization": {
     "stage": 2,
   },
-  "train_micro_batch_size_per_gpu": "auto",
+  "train_micro_batch_size_per_gpu": 1,
   "gradient_accumulation_steps": "auto",
   "train_batch_size": "auto",
   "steps_per_print": 10
@@ -98,11 +112,13 @@ with open("ds_config.json", "w") as f:
 # ==========================
 # Training Arguments
 # ==========================
+torch.cuda.empty_cache()
+
 training_args = TrainingArguments(
     output_dir="./lunaris_finetuned",
     overwrite_output_dir=True,
     num_train_epochs=3,
-    per_device_train_batch_size=2,
+    per_device_train_batch_size=1,
     gradient_accumulation_steps=4,
     learning_rate=2e-5,
     weight_decay=0.01,
